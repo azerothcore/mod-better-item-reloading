@@ -9,20 +9,20 @@ jobs:
       fail-fast: false
       matrix:
         compiler: [clang]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     name: ${{ matrix.compiler }}
     env:
       COMPILER: ${{ matrix.compiler }}
     steps:
       - uses: actions/checkout@v2
         with:
-          repository: 'azerothcore/azerothcore-wotlk'
-          ref: 'master'
-          submodules: 'recursive'
+          repository: "azerothcore/azerothcore-wotlk"
+          ref: "master"
+          submodules: "recursive"
       - uses: actions/checkout@v2
         with:
-          submodules: 'recursive'
-          path: 'modules/mod-better-item-reloading'
+          submodules: "recursive"
+          path: "modules/mod-better-item-reloading"
       - name: Cache
         uses: actions/cache@v1.1.2
         with:
