@@ -28,10 +28,11 @@ public:
         return commandTable;
     }
 
-    static bool HandleBetterReloadItemsCommand(ChatHandler* handler, const char* args)
+    static bool HandleBetterReloadItemsCommand(ChatHandler* handler, std::string args)
     {
-        if (!*args)
+        if (!args.empty())
             return false;
+
         Player* player = handler->GetSession()->GetPlayer();
         if (!player)
             return false;
