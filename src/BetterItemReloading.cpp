@@ -11,19 +11,21 @@
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #endif
 
+using namespace Acore::ChatCommands;
+
 class BetterItemReloading : public CommandScript
 {
 public:
     BetterItemReloading() : CommandScript("BetterItemReloading") { }
 
-    Acore::ChatCommands::ChatCommandTable GetCommands() const override
+    ChatCommandTable GetCommands() const override
     {
-        static Acore::ChatCommands::ChatCommandTable breloadCommandTable =
+        static ChatCommandTable breloadCommandTable =
         {
-            { "item",  HandleBetterReloadItemsCommand,  SEC_ADMINISTRATOR, Acore::ChatCommands::Console::Yes }
+            { "item",  HandleBetterReloadItemsCommand, SEC_ADMINISTRATOR, Console::Yes }
         };
 
-        static Acore::ChatCommands::ChatCommandTable commandTable =
+        static ChatCommandTable commandTable =
         {
             { "breload", breloadCommandTable}
         };
@@ -47,7 +49,7 @@ public:
 
         for (auto const& itr : Acore::Tokenize(args, ' ', false))
         {
-            uint32 entry = atoi((char*)args);
+            uint32 entry = uint32(atoi(itr.data()));
 
             // Deequip the item and cache it
             for (uint8 i = EQUIPMENT_SLOT_START; i < EQUIPMENT_SLOT_END; ++i)
