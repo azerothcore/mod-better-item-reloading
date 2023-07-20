@@ -1,32 +1,48 @@
-# Prerequisites
-*.d
+!.gitignore
 
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
+#
+#Generic
+#
 
-# Precompiled Headers
-*.gch
-*.pch
+.directory
+.mailmap
+*.orig
+*.rej
+*.*~
+.hg/
+*.kdev*
+.DS_Store
+CMakeLists.txt.user
+*.bak
+*.patch
+*.diff
+*.REMOTE.*
+*.BACKUP.*
+*.BASE.*
+*.LOCAL.*
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
+#
+# IDE & other softwares
+#
+/.settings/
+/.externalToolBuilders/*
+# exclude in all levels
+nbproject/
+.sync.ffs_db
+*.kate-swp
 
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
-*.exe
-*.out
-*.app
+#
+# Eclipse
+#
+*.pydevproject
+.metadata
+.gradle
+tmp/
+*.tmp
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+.project
+.cproject
