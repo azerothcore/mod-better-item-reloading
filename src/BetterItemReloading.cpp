@@ -7,6 +7,10 @@
 #include "DisableMgr.h"
 #include "Tokenize.h"
 
+#if AC_COMPILER == AC_COMPILER_GNU
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
+
 class BetterItemReloading : public CommandScript
 {
 public:
