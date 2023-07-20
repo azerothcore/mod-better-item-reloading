@@ -27,12 +27,13 @@ public:
         return commandTable;
     }
 
-    static bool HandleBetterReloadItemsCommand(ChatHandler* handler, std::string args)
+    static bool HandleBetterReloadItemsCommand(ChatHandler* handler, const char* args)
     {
-        if (!args.empty())
+        if (!*args)
             return false;
 
         Player* player = handler->GetSession()->GetPlayer();
+
         if (!player)
             return false;
 
@@ -42,13 +43,13 @@ public:
 
         for (auto const& itr : Acore::Tokenize(args, ' ', false))
         {
-            Optional<uint32> entry = Acore::StringTo<uint32>(itr);
+            uint32 entry = atoi((char*)args);
 
             // Deequip the item and cache it
             for (uint8 i = EQUIPMENT_SLOT_START; i < EQUIPMENT_SLOT_END; ++i)
             {
                 Item* pItem = player->GetItemByPos(INVENTORY_SLOT_BAG_0, i);
-                if (pItem && pItem->GetEntry() == *entry)
+                if (pItem && pItem->GetEntry() == entry)
                 {
                     uint8 slot = pItem->GetSlot();
                     pItems.push_back(pItem);
@@ -57,23 +58,23 @@ public:
                 }
             }
 
-            QueryResult result = WorldDatabase.Query("SELECT `entry`, `class`, `subclass`, `SoundOverrideSubclass`, `name`, `displayid`, `Quality`, `Flags`, `FlagsExtra`, `BuyCount`, `BuyPrice`, `SellPrice`, `InventoryType`, `AllowableClass`, `AllowableRace`, `ItemLevel`, `RequiredLevel`, `RequiredSkill`, `RequiredSkillRank`, `requiredspell`, `requiredhonorrank`, `RequiredCityRank`, `RequiredReputationFaction`, `RequiredReputationRank`, `maxcount`, `stackable`, `ContainerSlots`, `StatsCount`, `stat_type1`, `stat_value1`, `stat_type2`, `stat_value2`, `stat_type3`, `stat_value3`, `stat_type4`, `stat_value4`, `stat_type5`, `stat_value5`, `stat_type6`, `stat_value6`, `stat_type7`, `stat_value7`, `stat_type8`, `stat_value8`, `stat_type9`, `stat_value9`, `stat_type10`, `stat_value10`, `ScalingStatDistribution`, `ScalingStatValue`, `dmg_min1`, `dmg_max1`, `dmg_type1`, `dmg_min2`, `dmg_max2`, `dmg_type2`, `armor`, `holy_res`, `fire_res`, `nature_res`, `frost_res`, `shadow_res`, `arcane_res`, `delay`, `ammo_type`, `RangedModRange`, `spellid_1`, `spelltrigger_1`, `spellcharges_1`, `spellppmRate_1`, `spellcooldown_1`, `spellcategory_1`, `spellcategorycooldown_1`, `spellid_2`, `spelltrigger_2`, `spellcharges_2`, `spellppmRate_2`, `spellcooldown_2`, `spellcategory_2`, `spellcategorycooldown_2`, `spellid_3`, `spelltrigger_3`, `spellcharges_3`, `spellppmRate_3`, `spellcooldown_3`, `spellcategory_3`, `spellcategorycooldown_3`, `spellid_4`, `spelltrigger_4`, `spellcharges_4`, `spellppmRate_4`, `spellcooldown_4`, `spellcategory_4`, `spellcategorycooldown_4`, `spellid_5`, `spelltrigger_5`, `spellcharges_5`, `spellppmRate_5`, `spellcooldown_5`, `spellcategory_5`, `spellcategorycooldown_5`, `bonding`, `description`, `PageText`, `LanguageID`, `PageMaterial`, `startquest`, `lockid`, `Material`, `sheath`, `RandomProperty`, `RandomSuffix`, `block`, `itemset`, `MaxDurability`, `area`, `Map`, `BagFamily`, `TotemCategory`, `socketColor_1`, `socketContent_1`, `socketColor_2`, `socketContent_2`, `socketColor_3`, `socketContent_3`, `socketBonus`, `GemProperties`, `RequiredDisenchantSkill`, `ArmorDamageModifier`, `duration`, `ItemLimitCategory`, `HolidayId`, `ScriptName`, `DisenchantID`, `FoodType`, `minMoneyLoot`, `maxMoneyLoot`, `flagsCustom`, `VerifiedBuild` FROM `item_template` WHERE `entry`={}", *entry);
+            QueryResult result = WorldDatabase.Query("SELECT `entry`, `class`, `subclass`, `SoundOverrideSubclass`, `name`, `displayid`, `Quality`, `Flags`, `FlagsExtra`, `BuyCount`, `BuyPrice`, `SellPrice`, `InventoryType`, `AllowableClass`, `AllowableRace`, `ItemLevel`, `RequiredLevel`, `RequiredSkill`, `RequiredSkillRank`, `requiredspell`, `requiredhonorrank`, `RequiredCityRank`, `RequiredReputationFaction`, `RequiredReputationRank`, `maxcount`, `stackable`, `ContainerSlots`, `StatsCount`, `stat_type1`, `stat_value1`, `stat_type2`, `stat_value2`, `stat_type3`, `stat_value3`, `stat_type4`, `stat_value4`, `stat_type5`, `stat_value5`, `stat_type6`, `stat_value6`, `stat_type7`, `stat_value7`, `stat_type8`, `stat_value8`, `stat_type9`, `stat_value9`, `stat_type10`, `stat_value10`, `ScalingStatDistribution`, `ScalingStatValue`, `dmg_min1`, `dmg_max1`, `dmg_type1`, `dmg_min2`, `dmg_max2`, `dmg_type2`, `armor`, `holy_res`, `fire_res`, `nature_res`, `frost_res`, `shadow_res`, `arcane_res`, `delay`, `ammo_type`, `RangedModRange`, `spellid_1`, `spelltrigger_1`, `spellcharges_1`, `spellppmRate_1`, `spellcooldown_1`, `spellcategory_1`, `spellcategorycooldown_1`, `spellid_2`, `spelltrigger_2`, `spellcharges_2`, `spellppmRate_2`, `spellcooldown_2`, `spellcategory_2`, `spellcategorycooldown_2`, `spellid_3`, `spelltrigger_3`, `spellcharges_3`, `spellppmRate_3`, `spellcooldown_3`, `spellcategory_3`, `spellcategorycooldown_3`, `spellid_4`, `spelltrigger_4`, `spellcharges_4`, `spellppmRate_4`, `spellcooldown_4`, `spellcategory_4`, `spellcategorycooldown_4`, `spellid_5`, `spelltrigger_5`, `spellcharges_5`, `spellppmRate_5`, `spellcooldown_5`, `spellcategory_5`, `spellcategorycooldown_5`, `bonding`, `description`, `PageText`, `LanguageID`, `PageMaterial`, `startquest`, `lockid`, `Material`, `sheath`, `RandomProperty`, `RandomSuffix`, `block`, `itemset`, `MaxDurability`, `area`, `Map`, `BagFamily`, `TotemCategory`, `socketColor_1`, `socketContent_1`, `socketColor_2`, `socketContent_2`, `socketColor_3`, `socketContent_3`, `socketBonus`, `GemProperties`, `RequiredDisenchantSkill`, `ArmorDamageModifier`, `duration`, `ItemLimitCategory`, `HolidayId`, `ScriptName`, `DisenchantID`, `FoodType`, `minMoneyLoot`, `maxMoneyLoot`, `flagsCustom`, `VerifiedBuild` FROM `item_template` WHERE `entry`={}", entry);
 
             if (!result)
             {
-                handler->PSendSysMessage("Couldn't reload item_template entry {}", *entry);
+                handler->PSendSysMessage("Couldn't reload item_template entry {}", entry);
                 continue;
             }
 
             Field* fields = result->Fetch();
 
             ItemTemplate* itemTemplate;
-            std::unordered_map<uint32, ItemTemplate>::const_iterator hasItem = sObjectMgr->GetItemTemplateStore()->find(*entry);
+            std::unordered_map<uint32, ItemTemplate>::const_iterator hasItem = sObjectMgr->GetItemTemplateStore()->find(entry);
 
             if (hasItem == sObjectMgr->GetItemTemplateStore()->end())
             {
                 auto itStore = const_cast<ItemTemplateContainer*>(sObjectMgr->GetItemTemplateStore());
-                itStore->insert(std::make_pair(*entry, ItemTemplate()));
+                itStore->insert(std::make_pair(entry, ItemTemplate()));
                 auto itStoreFast = const_cast<std::vector<ItemTemplate*>*>(sObjectMgr->GetItemTemplateStoreFast());
 
                 // Sadly, we have to reinsert all items here
@@ -90,9 +91,9 @@ public:
                 }
             }
 
-            itemTemplate = const_cast<ItemTemplate*>(&sObjectMgr->GetItemTemplateStore()->at(*entry));
+            itemTemplate = const_cast<ItemTemplate*>(&sObjectMgr->GetItemTemplateStore()->at(entry));
 
-            itemTemplate->ItemId = *entry;
+            itemTemplate->ItemId = entry;
             itemTemplate->Class = uint32(fields[1].Get<uint8>());
             itemTemplate->SubClass = uint32(fields[2].Get<uint8>());
             itemTemplate->SoundOverrideSubclass = int32(fields[3].Get<int8>());
@@ -200,19 +201,19 @@ public:
 
             if (itemTemplate->Class >= MAX_ITEM_CLASS)
             {
-                LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong Class value ({})", *entry, itemTemplate->Class);
+                LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong Class value ({})", entry, itemTemplate->Class);
                 itemTemplate->Class = ITEM_CLASS_MISC;
             }
 
             if (itemTemplate->SubClass >= MaxItemSubclassValues[itemTemplate->Class])
             {
-                LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong Subclass value ({}) for class {}", *entry, itemTemplate->SubClass, itemTemplate->Class);
+                LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong Subclass value ({}) for class {}", entry, itemTemplate->SubClass, itemTemplate->Class);
                 itemTemplate->SubClass = 0;// exist for all item classes
             }
 
             if (itemTemplate->Quality >= MAX_ITEM_QUALITY)
             {
-                LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong Quality value ({})", *entry, itemTemplate->Quality);
+                LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong Quality value ({})", entry, itemTemplate->Quality);
                 itemTemplate->Quality = ITEM_QUALITY_NORMAL;
             }
 
@@ -220,33 +221,33 @@ public:
             {
                 if (FactionEntry const* faction = sFactionStore.LookupEntry(HORDE))
                     if ((itemTemplate->AllowableRace & faction->BaseRepRaceMask[0]) == 0)
-                        LOG_ERROR("sql.sql", "Item (Entry: {}) has value ({}) in `AllowableRace` races, not compatible with ITEM_FLAGS_EXTRA_HORDE_ONLY ({}) in Flags field, item cannot be equipped or used by these races.", *entry, itemTemplate->AllowableRace, ITEM_FLAGS_EXTRA_HORDE_ONLY);
+                        LOG_ERROR("sql.sql", "Item (Entry: {}) has value ({}) in `AllowableRace` races, not compatible with ITEM_FLAGS_EXTRA_HORDE_ONLY ({}) in Flags field, item cannot be equipped or used by these races.", entry, itemTemplate->AllowableRace, ITEM_FLAGS_EXTRA_HORDE_ONLY);
 
                 if (itemTemplate->Flags2 & ITEM_FLAGS_EXTRA_ALLIANCE_ONLY)
-                    LOG_ERROR("sql.sql", "Item (Entry: {}) has value ({}) in `Flags2` flags (ITEM_FLAGS_EXTRA_ALLIANCE_ONLY) and ITEM_FLAGS_EXTRA_HORDE_ONLY ({}) in Flags field, this is a wrong combination.", *entry, ITEM_FLAGS_EXTRA_ALLIANCE_ONLY, ITEM_FLAGS_EXTRA_HORDE_ONLY);
+                    LOG_ERROR("sql.sql", "Item (Entry: {}) has value ({}) in `Flags2` flags (ITEM_FLAGS_EXTRA_ALLIANCE_ONLY) and ITEM_FLAGS_EXTRA_HORDE_ONLY ({}) in Flags field, this is a wrong combination.", entry, ITEM_FLAGS_EXTRA_ALLIANCE_ONLY, ITEM_FLAGS_EXTRA_HORDE_ONLY);
             }
             else if (itemTemplate->Flags2 & ITEM_FLAGS_EXTRA_ALLIANCE_ONLY)
             {
                 if (FactionEntry const* faction = sFactionStore.LookupEntry(ALLIANCE))
                     if ((itemTemplate->AllowableRace & faction->BaseRepRaceMask[0]) == 0)
-                        LOG_ERROR("sql.sql", "Item (Entry: {}) has value ({}) in `AllowableRace` races, not compatible with ITEM_FLAGS_EXTRA_ALLIANCE_ONLY ({}) in Flags field, item cannot be equipped or used by these races.", *entry, itemTemplate->AllowableRace, ITEM_FLAGS_EXTRA_ALLIANCE_ONLY);
+                        LOG_ERROR("sql.sql", "Item (Entry: {}) has value ({}) in `AllowableRace` races, not compatible with ITEM_FLAGS_EXTRA_ALLIANCE_ONLY ({}) in Flags field, item cannot be equipped or used by these races.", entry, itemTemplate->AllowableRace, ITEM_FLAGS_EXTRA_ALLIANCE_ONLY);
             }
 
             if (itemTemplate->BuyCount <= 0)
             {
-                LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong BuyCount value ({}), set to default(1).", *entry, itemTemplate->BuyCount);
+                LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong BuyCount value ({}), set to default(1).", entry, itemTemplate->BuyCount);
                 itemTemplate->BuyCount = 1;
             }
 
             if (itemTemplate->InventoryType >= MAX_INVTYPE)
             {
-                LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong InventoryType value ({})", *entry, itemTemplate->InventoryType);
+                LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong InventoryType value ({})", entry, itemTemplate->InventoryType);
                 itemTemplate->InventoryType = INVTYPE_NON_EQUIP;
             }
 
             if (itemTemplate->RequiredSkill >= MAX_SKILL_TYPE)
             {
-                LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong RequiredSkill value ({})", *entry, itemTemplate->RequiredSkill);
+                LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong RequiredSkill value ({})", entry, itemTemplate->RequiredSkill);
                 itemTemplate->RequiredSkill = 0;
             }
 
@@ -266,60 +267,60 @@ public:
                 if (req)
                 {
                     if (!(itemTemplate->AllowableClass & CLASSMASK_ALL_PLAYABLE))
-                        LOG_ERROR("sql.sql", "Item (Entry: {}) does not have any playable classes ({}) in `AllowableClass` and can't be equipped or used.", *entry, itemTemplate->AllowableClass);
+                        LOG_ERROR("sql.sql", "Item (Entry: {}) does not have any playable classes ({}) in `AllowableClass` and can't be equipped or used.", entry, itemTemplate->AllowableClass);
 
                     if (!(itemTemplate->AllowableRace & RACEMASK_ALL_PLAYABLE))
-                        LOG_ERROR("sql.sql", "Item (Entry: {}) does not have any playable races ({}) in `AllowableRace` and can't be equipped or used.", *entry, itemTemplate->AllowableRace);
+                        LOG_ERROR("sql.sql", "Item (Entry: {}) does not have any playable races ({}) in `AllowableRace` and can't be equipped or used.", entry, itemTemplate->AllowableRace);
                 }
             }
 
             if (itemTemplate->RequiredSpell && !sSpellMgr->GetSpellInfo(itemTemplate->RequiredSpell))
             {
-                LOG_ERROR("sql.sql", "Item (Entry: {}) has a wrong (non-existing) spell in RequiredSpell ({})", *entry, itemTemplate->RequiredSpell);
+                LOG_ERROR("sql.sql", "Item (Entry: {}) has a wrong (non-existing) spell in RequiredSpell ({})", entry, itemTemplate->RequiredSpell);
                 itemTemplate->RequiredSpell = 0;
             }
 
             if (itemTemplate->RequiredReputationRank >= MAX_REPUTATION_RANK)
-                LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong reputation rank in RequiredReputationRank ({}), item can't be used.", *entry, itemTemplate->RequiredReputationRank);
+                LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong reputation rank in RequiredReputationRank ({}), item can't be used.", entry, itemTemplate->RequiredReputationRank);
 
             if (itemTemplate->RequiredReputationFaction)
             {
                 if (!sFactionStore.LookupEntry(itemTemplate->RequiredReputationFaction))
                 {
-                    LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong (not existing) faction in RequiredReputationFaction ({})", *entry, itemTemplate->RequiredReputationFaction);
+                    LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong (not existing) faction in RequiredReputationFaction ({})", entry, itemTemplate->RequiredReputationFaction);
                     itemTemplate->RequiredReputationFaction = 0;
                 }
 
                 if (itemTemplate->RequiredReputationRank == MIN_REPUTATION_RANK)
-                    LOG_ERROR("sql.sql", "Item (Entry: {}) has min. reputation rank in RequiredReputationRank (0) but RequiredReputationFaction > 0, faction setting is useless.", *entry);
+                    LOG_ERROR("sql.sql", "Item (Entry: {}) has min. reputation rank in RequiredReputationRank (0) but RequiredReputationFaction > 0, faction setting is useless.", entry);
             }
 
             if (itemTemplate->MaxCount < -1)
             {
-                LOG_ERROR("sql.sql", "Item (Entry: {}) has too large negative in maxcount (%i), replace by value (-1) no storing limits.", *entry, itemTemplate->MaxCount);
+                LOG_ERROR("sql.sql", "Item (Entry: {}) has too large negative in maxcount (%i), replace by value (-1) no storing limits.", entry, itemTemplate->MaxCount);
                 itemTemplate->MaxCount = -1;
             }
 
             if (itemTemplate->Stackable == 0)
             {
-                LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong value in stackable (%i), replace by default 1.", *entry, itemTemplate->Stackable);
+                LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong value in stackable (%i), replace by default 1.", entry, itemTemplate->Stackable);
                 itemTemplate->Stackable = 1;
             }
             else if (itemTemplate->Stackable < -1)
             {
-                LOG_ERROR("sql.sql", "Item (Entry: {}) has too large negative in stackable (%i), replace by value (-1) no stacking limits.", *entry, itemTemplate->Stackable);
+                LOG_ERROR("sql.sql", "Item (Entry: {}) has too large negative in stackable (%i), replace by value (-1) no stacking limits.", entry, itemTemplate->Stackable);
                 itemTemplate->Stackable = -1;
             }
 
             if (itemTemplate->ContainerSlots > MAX_BAG_SIZE)
             {
-                LOG_ERROR("sql.sql", "Item (Entry: {}) has too large value in ContainerSlots ({}), replace by hardcoded limit ({}).", *entry, itemTemplate->ContainerSlots, MAX_BAG_SIZE);
+                LOG_ERROR("sql.sql", "Item (Entry: {}) has too large value in ContainerSlots ({}), replace by hardcoded limit ({}).", entry, itemTemplate->ContainerSlots, MAX_BAG_SIZE);
                 itemTemplate->ContainerSlots = MAX_BAG_SIZE;
             }
 
             if (itemTemplate->StatsCount > MAX_ITEM_PROTO_STATS)
             {
-                LOG_ERROR("sql.sql", "Item (Entry: {}) has too large value in statscount ({}), replace by hardcoded limit ({}).", *entry, itemTemplate->StatsCount, MAX_ITEM_PROTO_STATS);
+                LOG_ERROR("sql.sql", "Item (Entry: {}) has too large value in statscount ({}), replace by hardcoded limit ({}).", entry, itemTemplate->StatsCount, MAX_ITEM_PROTO_STATS);
                 itemTemplate->StatsCount = MAX_ITEM_PROTO_STATS;
             }
 
@@ -328,7 +329,7 @@ public:
                 // for ItemStatValue != 0
                 if (itemTemplate->ItemStat[j].ItemStatValue && itemTemplate->ItemStat[j].ItemStatType >= MAX_ITEM_MOD)
                 {
-                    LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong (non-existing?) stat_type%d ({})", *entry, j + 1, itemTemplate->ItemStat[j].ItemStatType);
+                    LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong (non-existing?) stat_type%d ({})", entry, j + 1, itemTemplate->ItemStat[j].ItemStatType);
                     itemTemplate->ItemStat[j].ItemStatType = 0;
                 }
 
@@ -336,7 +337,7 @@ public:
                 {
                 case ITEM_MOD_SPELL_HEALING_DONE:
                 case ITEM_MOD_SPELL_DAMAGE_DONE:
-                    LOG_ERROR("sql.sql", "Item (Entry: {}) has deprecated stat_type%d ({})", *entry, j + 1, itemTemplate->ItemStat[j].ItemStatType);
+                    LOG_ERROR("sql.sql", "Item (Entry: {}) has deprecated stat_type%d ({})", entry, j + 1, itemTemplate->ItemStat[j].ItemStatType);
                     break;
                 default:
                     break;
@@ -347,7 +348,7 @@ public:
             {
                 if (itemTemplate->Damage[j].DamageType >= MAX_SPELL_SCHOOL)
                 {
-                    LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong dmg_type%d ({})", *entry, j + 1, itemTemplate->Damage[j].DamageType);
+                    LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong dmg_type%d ({})", entry, j + 1, itemTemplate->Damage[j].DamageType);
                     itemTemplate->Damage[j].DamageType = 0;
                 }
             }
@@ -358,7 +359,7 @@ public:
                 // spell_1
                 if (itemTemplate->Spells[0].SpellTrigger != ITEM_SPELLTRIGGER_ON_USE)
                 {
-                    LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong item spell trigger value in spelltrigger_%d ({}) for special learning format", *entry, 0 + 1, itemTemplate->Spells[0].SpellTrigger);
+                    LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong item spell trigger value in spelltrigger_%d ({}) for special learning format", entry, 0 + 1, itemTemplate->Spells[0].SpellTrigger);
                     itemTemplate->Spells[0].SpellId = 0;
                     itemTemplate->Spells[0].SpellTrigger = ITEM_SPELLTRIGGER_ON_USE;
                     itemTemplate->Spells[1].SpellId = 0;
@@ -368,14 +369,14 @@ public:
                 // spell_2 have learning spell
                 if (itemTemplate->Spells[1].SpellTrigger != ITEM_SPELLTRIGGER_LEARN_SPELL_ID)
                 {
-                    LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong item spell trigger value in spelltrigger_%d ({}) for special learning format.", *entry, 1 + 1, itemTemplate->Spells[1].SpellTrigger);
+                    LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong item spell trigger value in spelltrigger_%d ({}) for special learning format.", entry, 1 + 1, itemTemplate->Spells[1].SpellTrigger);
                     itemTemplate->Spells[0].SpellId = 0;
                     itemTemplate->Spells[1].SpellId = 0;
                     itemTemplate->Spells[1].SpellTrigger = ITEM_SPELLTRIGGER_ON_USE;
                 }
                 else if (!itemTemplate->Spells[1].SpellId)
                 {
-                    LOG_ERROR("sql.sql", "Item (Entry: {}) does not have an expected spell in spellid_%d in special learning format.", *entry, 1 + 1);
+                    LOG_ERROR("sql.sql", "Item (Entry: {}) does not have an expected spell in spellid_%d in special learning format.", entry, 1 + 1);
                     itemTemplate->Spells[0].SpellId = 0;
                     itemTemplate->Spells[1].SpellTrigger = ITEM_SPELLTRIGGER_ON_USE;
                 }
@@ -384,7 +385,7 @@ public:
                     SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(itemTemplate->Spells[1].SpellId);
                     if (!spellInfo && !DisableMgr::IsDisabledFor(DISABLE_TYPE_SPELL, itemTemplate->Spells[1].SpellId, NULL))
                     {
-                        LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong (not existing) spell in spellid_%d (%d)", *entry, 1 + 1, itemTemplate->Spells[1].SpellId);
+                        LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong (not existing) spell in spellid_%d (%d)", entry, 1 + 1, itemTemplate->Spells[1].SpellId);
                         itemTemplate->Spells[0].SpellId = 0;
                         itemTemplate->Spells[1].SpellId = 0;
                         itemTemplate->Spells[1].SpellTrigger = ITEM_SPELLTRIGGER_ON_USE;
@@ -392,7 +393,7 @@ public:
                     // allowed only in special format
                     else if ((itemTemplate->Spells[1].SpellId == 483) || (itemTemplate->Spells[1].SpellId == 55884))
                     {
-                        LOG_ERROR("sql.sql", "Item (Entry: {}) has broken spell in spellid_%d (%d)", *entry, 1 + 1, itemTemplate->Spells[1].SpellId);
+                        LOG_ERROR("sql.sql", "Item (Entry: {}) has broken spell in spellid_%d (%d)", entry, 1 + 1, itemTemplate->Spells[1].SpellId);
                         itemTemplate->Spells[0].SpellId = 0;
                         itemTemplate->Spells[1].SpellId = 0;
                         itemTemplate->Spells[1].SpellTrigger = ITEM_SPELLTRIGGER_ON_USE;
@@ -404,13 +405,13 @@ public:
                 {
                     if (itemTemplate->Spells[j].SpellTrigger != ITEM_SPELLTRIGGER_ON_USE)
                     {
-                        LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong item spell trigger value in spelltrigger_%d ({})", *entry, j + 1, itemTemplate->Spells[j].SpellTrigger);
+                        LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong item spell trigger value in spelltrigger_%d ({})", entry, j + 1, itemTemplate->Spells[j].SpellTrigger);
                         itemTemplate->Spells[j].SpellId = 0;
                         itemTemplate->Spells[j].SpellTrigger = ITEM_SPELLTRIGGER_ON_USE;
                     }
                     else if (itemTemplate->Spells[j].SpellId != 0)
                     {
-                        LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong spell in spellid_%d (%d) for learning special format", *entry, j + 1, itemTemplate->Spells[j].SpellId);
+                        LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong spell in spellid_%d (%d) for learning special format", entry, j + 1, itemTemplate->Spells[j].SpellId);
                         itemTemplate->Spells[j].SpellId = 0;
                     }
                 }
@@ -422,7 +423,7 @@ public:
                 {
                     if (itemTemplate->Spells[j].SpellTrigger >= MAX_ITEM_SPELLTRIGGER || itemTemplate->Spells[j].SpellTrigger == ITEM_SPELLTRIGGER_LEARN_SPELL_ID)
                     {
-                        LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong item spell trigger value in spelltrigger_%d ({})", *entry, j + 1, itemTemplate->Spells[j].SpellTrigger);
+                        LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong item spell trigger value in spelltrigger_%d ({})", entry, j + 1, itemTemplate->Spells[j].SpellTrigger);
                         itemTemplate->Spells[j].SpellId = 0;
                         itemTemplate->Spells[j].SpellTrigger = ITEM_SPELLTRIGGER_ON_USE;
                     }
@@ -432,13 +433,13 @@ public:
                         SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(itemTemplate->Spells[j].SpellId);
                         if (!spellInfo && !DisableMgr::IsDisabledFor(DISABLE_TYPE_SPELL, itemTemplate->Spells[j].SpellId, NULL))
                         {
-                            LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong (not existing) spell in spellid_%d (%d)", *entry, j + 1, itemTemplate->Spells[j].SpellId);
+                            LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong (not existing) spell in spellid_%d (%d)", entry, j + 1, itemTemplate->Spells[j].SpellId);
                             itemTemplate->Spells[j].SpellId = 0;
                         }
                         // allowed only in special format
                         else if ((itemTemplate->Spells[j].SpellId == 483) || (itemTemplate->Spells[j].SpellId == 55884))
                         {
-                            LOG_ERROR("sql.sql", "Item (Entry: {}) has broken spell in spellid_%d (%d)", *entry, j + 1, itemTemplate->Spells[j].SpellId);
+                            LOG_ERROR("sql.sql", "Item (Entry: {}) has broken spell in spellid_%d (%d)", entry, j + 1, itemTemplate->Spells[j].SpellId);
                             itemTemplate->Spells[j].SpellId = 0;
                         }
                     }
@@ -446,17 +447,17 @@ public:
             }
 
             if (itemTemplate->Bonding >= MAX_BIND_TYPE)
-                LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong Bonding value ({})", *entry, itemTemplate->Bonding);
+                LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong Bonding value ({})", entry, itemTemplate->Bonding);
 
             if (itemTemplate->PageText && !sObjectMgr->GetPageText(itemTemplate->PageText))
-                LOG_ERROR("sql.sql", "Item (Entry: {}) has non existing first page (Id:{})", *entry, itemTemplate->PageText);
+                LOG_ERROR("sql.sql", "Item (Entry: {}) has non existing first page (Id:{})", entry, itemTemplate->PageText);
 
             if (itemTemplate->LockID && !sLockStore.LookupEntry(itemTemplate->LockID))
-                LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong LockID ({})", *entry, itemTemplate->LockID);
+                LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong LockID ({})", entry, itemTemplate->LockID);
 
             if (itemTemplate->Sheath >= MAX_SHEATHETYPE)
             {
-                LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong Sheath ({})", *entry, itemTemplate->Sheath);
+                LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong Sheath ({})", entry, itemTemplate->Sheath);
                 itemTemplate->Sheath = SHEATHETYPE_NONE;
             }
 
@@ -467,28 +468,28 @@ public:
 
                 else if (!sItemRandomPropertiesStore.LookupEntry(GetItemEnchantMod(itemTemplate->RandomProperty)))
                 {
-                    LOG_ERROR("sql.sql", "Item (Entry: {}) has unknown (wrong or not listed in `item_enchantment_template`) RandomProperty ({})", *entry, itemTemplate->RandomProperty);
+                    LOG_ERROR("sql.sql", "Item (Entry: {}) has unknown (wrong or not listed in `item_enchantment_template`) RandomProperty ({})", entry, itemTemplate->RandomProperty);
                     itemTemplate->RandomProperty = 0;
                 }
             }
 
             if (itemTemplate->RandomSuffix && !sItemRandomSuffixStore.LookupEntry(GetItemEnchantMod(itemTemplate->RandomSuffix)))
             {
-                LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong RandomSuffix ({})", *entry, itemTemplate->RandomSuffix);
+                LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong RandomSuffix ({})", entry, itemTemplate->RandomSuffix);
                 itemTemplate->RandomSuffix = 0;
             }
 
             if (itemTemplate->ItemSet && !sItemSetStore.LookupEntry(itemTemplate->ItemSet))
             {
-                LOG_ERROR("sql.sql", "Item (Entry: {}) have wrong ItemSet ({})", *entry, itemTemplate->ItemSet);
+                LOG_ERROR("sql.sql", "Item (Entry: {}) have wrong ItemSet ({})", entry, itemTemplate->ItemSet);
                 itemTemplate->ItemSet = 0;
             }
 
             if (itemTemplate->Area && !sAreaTableStore.LookupEntry(itemTemplate->Area))
-                LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong Area ({})", *entry, itemTemplate->Area);
+                LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong Area ({})", entry, itemTemplate->Area);
 
             if (itemTemplate->Map && !sMapStore.LookupEntry(itemTemplate->Map))
-                LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong Map ({})", *entry, itemTemplate->Map);
+                LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong Map ({})", entry, itemTemplate->Map);
 
             if (itemTemplate->BagFamily)
             {
@@ -502,7 +503,7 @@ public:
                     ItemBagFamilyEntry const* bf = sItemBagFamilyStore.LookupEntry(j + 1);
                     if (!bf)
                     {
-                        LOG_ERROR("sql.sql", "Item (Entry: {}) has bag family bit set not listed in ItemBagFamily.dbc, remove bit", *entry);
+                        LOG_ERROR("sql.sql", "Item (Entry: {}) has bag family bit set not listed in ItemBagFamily.dbc, remove bit", entry);
                         itemTemplate->BagFamily &= ~mask;
                         continue;
                     }
@@ -512,7 +513,7 @@ public:
                         CurrencyTypesEntry const* ctEntry = sCurrencyTypesStore.LookupEntry(itemTemplate->ItemId);
                         if (!ctEntry)
                         {
-                            LOG_ERROR("sql.sql", "Item (Entry: {}) has currency bag family bit set in BagFamily but not listed in CurrencyTypes.dbc, remove bit", *entry);
+                            LOG_ERROR("sql.sql", "Item (Entry: {}) has currency bag family bit set in BagFamily but not listed in CurrencyTypes.dbc, remove bit", entry);
                             itemTemplate->BagFamily &= ~mask;
                         }
                     }
@@ -520,41 +521,41 @@ public:
             }
 
             if (itemTemplate->TotemCategory && !sTotemCategoryStore.LookupEntry(itemTemplate->TotemCategory))
-                LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong TotemCategory ({})", *entry, itemTemplate->TotemCategory);
+                LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong TotemCategory ({})", entry, itemTemplate->TotemCategory);
 
             for (uint8 j = 0; j < MAX_ITEM_PROTO_SOCKETS; ++j)
             {
                 if (itemTemplate->Socket[j].Color && (itemTemplate->Socket[j].Color & SOCKET_COLOR_ALL) != itemTemplate->Socket[j].Color)
                 {
-                    LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong socketColor_%d ({})", *entry, j + 1, itemTemplate->Socket[j].Color);
+                    LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong socketColor_%d ({})", entry, j + 1, itemTemplate->Socket[j].Color);
                     itemTemplate->Socket[j].Color = 0;
                 }
             }
 
             if (itemTemplate->GemProperties && !sGemPropertiesStore.LookupEntry(itemTemplate->GemProperties))
-                LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong GemProperties ({})", *entry, itemTemplate->GemProperties);
+                LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong GemProperties ({})", entry, itemTemplate->GemProperties);
 
             if (itemTemplate->FoodType >= MAX_PET_DIET)
             {
-                LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong FoodType value ({})", *entry, itemTemplate->FoodType);
+                LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong FoodType value ({})", entry, itemTemplate->FoodType);
                 itemTemplate->FoodType = 0;
             }
 
             if (itemTemplate->ItemLimitCategory && !sItemLimitCategoryStore.LookupEntry(itemTemplate->ItemLimitCategory))
             {
-                LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong LimitCategory value ({})", *entry, itemTemplate->ItemLimitCategory);
+                LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong LimitCategory value ({})", entry, itemTemplate->ItemLimitCategory);
                 itemTemplate->ItemLimitCategory = 0;
             }
 
             if (itemTemplate->HolidayId && !sHolidaysStore.LookupEntry(itemTemplate->HolidayId))
             {
-                LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong HolidayId value ({})", *entry, itemTemplate->HolidayId);
+                LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong HolidayId value ({})", entry, itemTemplate->HolidayId);
                 itemTemplate->HolidayId = 0;
             }
 
             if (itemTemplate->FlagsCu & ITEM_FLAGS_CU_DURATION_REAL_TIME && !itemTemplate->Duration)
             {
-                LOG_ERROR("sql.sql", "Item (Entry {}) has flag ITEM_FLAGS_CU_DURATION_REAL_TIME but it does not have duration limit", *entry);
+                LOG_ERROR("sql.sql", "Item (Entry {}) has flag ITEM_FLAGS_CU_DURATION_REAL_TIME but it does not have duration limit", entry);
                 itemTemplate->FlagsCu &= ~ITEM_FLAGS_CU_DURATION_REAL_TIME;
             }
 
@@ -587,7 +588,7 @@ public:
                     player->EquipItem(slots.at(i), pItems.at(i), true);
             }
 
-            handler->PSendSysMessage("Reloaded item template entry {}", *entry);
+            handler->PSendSysMessage("Reloaded item template entry %u", entry);
         }
 
         return true;
