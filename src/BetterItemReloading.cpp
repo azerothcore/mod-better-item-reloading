@@ -38,11 +38,6 @@ public:
         if (!*args)
             return false;
 
-        Player* player = handler->GetSession()->GetPlayer();
-
-        if (!player)
-            return false;
-
         std::vector<Item*> pItems;
         std::vector<uint8> slots;
         std::vector<uint8> bagSlots;
@@ -51,16 +46,19 @@ public:
         {
             uint32 entry = uint32(atoi(itr.data()));
 
-            // Deequip the item and cache it
-            for (uint8 i = EQUIPMENT_SLOT_START; i < EQUIPMENT_SLOT_END; ++i)
+            if (!handler->IsConsole())
             {
-                Item* pItem = player->GetItemByPos(INVENTORY_SLOT_BAG_0, i);
-                if (pItem && pItem->GetEntry() == entry)
+                // Deequip the item and cache it
+                for (uint8 i = EQUIPMENT_SLOT_START; i < EQUIPMENT_SLOT_END; ++i)
                 {
-                    uint8 slot = pItem->GetSlot();
-                    pItems.push_back(pItem);
-                    slots.push_back(slot);
-                    player->DestroyItem(pItem->GetBagSlot() , slot, true);
+                    Item* pItem = handler->GetSession()->GetPlayer()->GetItemByPos(INVENTORY_SLOT_BAG_0, i);
+                    if (pItem && pItem->GetEntry() == entry)
+                    {
+                        uint8 slot = pItem->GetSlot();
+                        pItems.push_back(pItem);
+                        slots.push_back(slot);
+                        handler->GetSession()->GetPlayer()->DestroyItem(pItem->GetBagSlot(), slot, true);
+                    }
                 }
             }
 
@@ -68,7 +66,7 @@ public:
 
             if (!result)
             {
-                handler->PSendSysMessage("Couldn't reload item_template entry {}", entry);
+                handler->PSendSysMessage("Couldn't reload item_template entry %u", entry);
                 continue;
             }
 
@@ -582,16 +580,18 @@ public:
                 }
             }
 
-            Player* player = handler->GetSession()->GetPlayer();
-
-            SendItemQuery(player, itemTemplate);
-
-            // safety check
-            if (pItems.size() == slots.size())
+            if (!handler->IsConsole())
             {
-                // re-equip the item to apply the new stats
-                for (size_t i = 0; i < pItems.size(); i++)
-                    player->EquipItem(slots.at(i), pItems.at(i), true);
+                SendItemQuery(handler->GetSession()->GetPlayer(), itemTemplate);
+
+                // safety check
+                if (pItems.size() == slots.size())
+                {
+                    // re-equip the item to apply the new stats
+                    for (size_t i = 0; i < pItems.size(); i++)
+                        handler->GetSession()->GetPlayer()->EquipItem(slots.at(i), pItems.at(i), true);
+                }
+
             }
 
             handler->PSendSysMessage("Reloaded item template entry %u", entry);
