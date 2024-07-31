@@ -2,6 +2,7 @@
 #include "Player.h"
 #include "Opcodes.h"
 #include "Spell.h"
+#include "SpellMgr.h"
 #include "ScriptMgr.h"
 #include "Language.h"
 #include "DisableMgr.h"
