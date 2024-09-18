@@ -67,7 +67,7 @@ public:
 
             if (!result)
             {
-                handler->PSendSysMessage("Couldn't reload item_template entry %u", entry);
+                handler->PSendSysMessage("Couldn't reload item_template entry ({})", entry);
                 continue;
             }
 
@@ -105,8 +105,8 @@ public:
             itemTemplate->Name1 = fields[4].Get<std::string>();
             itemTemplate->DisplayInfoID = fields[5].Get<uint32>();
             itemTemplate->Quality = uint32(fields[6].Get<uint8>());
-            itemTemplate->Flags = fields[7].Get<uint32>();
-            itemTemplate->Flags2 = fields[8].Get<uint32>();
+            itemTemplate->Flags = ItemFlags(fields[7].Get<uint32>());
+            itemTemplate->Flags2 = ItemFlags2(fields[8].Get<uint32>());
             itemTemplate->BuyCount = uint32(fields[9].Get<uint8>());
             itemTemplate->BuyPrice = int32(fields[10].Get<int64>());
             itemTemplate->SellPrice = fields[11].Get<uint32>();
@@ -202,7 +202,7 @@ public:
             itemTemplate->FoodType = uint32(fields[134].Get<uint8>());
             itemTemplate->MinMoneyLoot = fields[135].Get<uint32>();
             itemTemplate->MaxMoneyLoot = fields[136].Get<uint32>();
-            itemTemplate->FlagsCu = fields[137].Get<uint32>();
+            itemTemplate->FlagsCu = ItemFlagsCustom(fields[137].Get<uint32>());
 
             if (itemTemplate->Class >= MAX_ITEM_CLASS)
             {
@@ -222,20 +222,20 @@ public:
                 itemTemplate->Quality = ITEM_QUALITY_NORMAL;
             }
 
-            if (itemTemplate->Flags2 & ITEM_FLAGS_EXTRA_HORDE_ONLY)
+            if (itemTemplate->HasFlag2(ITEM_FLAG2_FACTION_HORDE))
             {
                 if (FactionEntry const* faction = sFactionStore.LookupEntry(HORDE))
                     if ((itemTemplate->AllowableRace & faction->BaseRepRaceMask[0]) == 0)
-                        LOG_ERROR("sql.sql", "Item (Entry: {}) has value ({}) in `AllowableRace` races, not compatible with ITEM_FLAGS_EXTRA_HORDE_ONLY ({}) in Flags field, item cannot be equipped or used by these races.", entry, itemTemplate->AllowableRace, ITEM_FLAGS_EXTRA_HORDE_ONLY);
+                        LOG_ERROR("sql.sql", "Item (Entry: {}) has value ({}) in `AllowableRace` races, not compatible with ITEM_FLAG2_FACTION_HORDE ({}) in Flags field, item cannot be equipped or used by these races.", entry, itemTemplate->AllowableRace, ITEM_FLAG2_FACTION_HORDE);
 
-                if (itemTemplate->Flags2 & ITEM_FLAGS_EXTRA_ALLIANCE_ONLY)
-                    LOG_ERROR("sql.sql", "Item (Entry: {}) has value ({}) in `Flags2` flags (ITEM_FLAGS_EXTRA_ALLIANCE_ONLY) and ITEM_FLAGS_EXTRA_HORDE_ONLY ({}) in Flags field, this is a wrong combination.", entry, ITEM_FLAGS_EXTRA_ALLIANCE_ONLY, ITEM_FLAGS_EXTRA_HORDE_ONLY);
+                if (itemTemplate->HasFlag2(ITEM_FLAG2_FACTION_ALLIANCE))
+                    LOG_ERROR("sql.sql", "Item (Entry: {}) has value ({}) in `Flags2` flags (ITEM_FLAG2_FACTION_ALLIANCE) and ITEM_FLAG2_FACTION_HORDE ({}) in Flags field, this is a wrong combination.", entry, ITEM_FLAG2_FACTION_ALLIANCE, ITEM_FLAG2_FACTION_HORDE);
             }
-            else if (itemTemplate->Flags2 & ITEM_FLAGS_EXTRA_ALLIANCE_ONLY)
+            else if (itemTemplate->HasFlag2(ITEM_FLAG2_FACTION_ALLIANCE))
             {
                 if (FactionEntry const* faction = sFactionStore.LookupEntry(ALLIANCE))
                     if ((itemTemplate->AllowableRace & faction->BaseRepRaceMask[0]) == 0)
-                        LOG_ERROR("sql.sql", "Item (Entry: {}) has value ({}) in `AllowableRace` races, not compatible with ITEM_FLAGS_EXTRA_ALLIANCE_ONLY ({}) in Flags field, item cannot be equipped or used by these races.", entry, itemTemplate->AllowableRace, ITEM_FLAGS_EXTRA_ALLIANCE_ONLY);
+                        LOG_ERROR("sql.sql", "Item (Entry: {}) has value ({}) in `AllowableRace` races, not compatible with ITEM_FLAG2_FACTION_ALLIANCE ({}) in Flags field, item cannot be equipped or used by these races.", entry, itemTemplate->AllowableRace, ITEM_FLAG2_FACTION_ALLIANCE);
             }
 
             if (itemTemplate->BuyCount <= 0)
@@ -558,10 +558,10 @@ public:
                 itemTemplate->HolidayId = 0;
             }
 
-            if (itemTemplate->FlagsCu & ITEM_FLAGS_CU_DURATION_REAL_TIME && !itemTemplate->Duration)
+            if (itemTemplate->HasFlagCu(ITEM_FLAGS_CU_DURATION_REAL_TIME) && !itemTemplate->Duration)
             {
                 LOG_ERROR("sql.sql", "Item (Entry {}) has flag ITEM_FLAGS_CU_DURATION_REAL_TIME but it does not have duration limit", entry);
-                itemTemplate->FlagsCu &= ~ITEM_FLAGS_CU_DURATION_REAL_TIME;
+                itemTemplate->FlagsCu = static_cast<ItemFlagsCustom>(static_cast<uint32>(itemTemplate->FlagsCu) & ~ITEM_FLAGS_CU_DURATION_REAL_TIME);
             }
 
             // Fill categories map
@@ -595,7 +595,7 @@ public:
 
             }
 
-            handler->PSendSysMessage("Reloaded item template entry %u", entry);
+            handler->PSendSysMessage("Reloaded item template entry ({})", entry);
         }
 
         return true;
