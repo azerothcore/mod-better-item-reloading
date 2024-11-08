@@ -7,7 +7,7 @@
 #include "Language.h"
 #include "DisableMgr.h"
 #include "Tokenize.h"
-
+#include "ItemEnchantmentMgr.h"
 #if AC_COMPILER == AC_COMPILER_GNU
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #endif
